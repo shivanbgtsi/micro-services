@@ -26,6 +26,6 @@ public class LoansController {
 
     @GetMapping("/{id}")
     public Loans getCustomer(@PathVariable("id") Integer id) {
-        return loanRepository.findById(id).orElseThrow(() -> new LoanNumberNotFoundException("Customer not found"));
+        return loanRepository.findById(id).orElseThrow(() -> new LoanNumberNotFoundException("Loan number not found"));
     }
 }
