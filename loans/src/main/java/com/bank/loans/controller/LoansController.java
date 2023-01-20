@@ -17,7 +17,7 @@ public class LoansController {
     private LoanRepository loanRepository;
 
     @PostMapping
-    public ResponseEntity<Void> addCustomers(@RequestBody Loans loans) {
+    public ResponseEntity<Void> addLoan(@RequestBody Loans loans) {
         Loans save = loanRepository.save(loans);
         HttpHeaders httpHeaders = new HttpHeaders();
         httpHeaders.add("customerId", save.getLoanNumber().toString());
@@ -25,7 +25,7 @@ public class LoansController {
     }
 
     @GetMapping("/{id}")
-    public Loans getCustomer(@PathVariable("id") Integer id) {
+    public Loans getLoan(@PathVariable("id") Integer id) {
         return loanRepository.findById(id).orElseThrow(() -> new LoanNumberNotFoundException("Loan number not found"));
     }
 }
