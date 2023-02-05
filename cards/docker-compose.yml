@@ -1,0 +1,35 @@
+version: "3.8"
+
+services:
+  cards:
+    image: micro-services/cards:latest
+#    deploy:
+#      resources:
+#        memory: 50M
+    ports:
+      - "5057:5057"
+    networks:
+      - micro-services
+
+  loans:
+    image: micro-services/loans:latest
+    #    deploy:
+    #      resources:
+    #        memory: 50M
+    ports:
+      - "5053:5053"
+    networks:
+      - micro-services
+  accounts:
+    image: micro-services/account:latest
+    #    deploy:
+    #      resources:
+    #        memory: 50M
+    ports:
+      - "5054:5054"
+    networks:
+      - micro-services
+
+
+networks:
+  micro-services:
