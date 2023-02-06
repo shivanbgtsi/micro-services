@@ -1,6 +1,16 @@
 version: "3.8"
 
 services:
+  service-discovery:
+    image: micro-services/service-discovery:latest
+    #    deploy:
+    #      resources:
+    #        memory: 50M
+    ports:
+      - "6060:6060"
+    networks:
+      - micro-services
+
   cards:
     image: micro-services/cards:latest
 #    deploy:
@@ -8,8 +18,18 @@ services:
 #        memory: 50M
     ports:
       - "5057:5057"
+    depends_on:
+      - service-discovery
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 15s
+        max_attempts: 3
+        window: 120s
     networks:
       - micro-services
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-discovery:6060/eureka/
 
   loans:
     image: micro-services/loans:latest
@@ -18,8 +38,19 @@ services:
     #        memory: 50M
     ports:
       - "5053:5053"
+    depends_on:
+      - service-discovery
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 15s
+        max_attempts: 3
+        window: 120s
     networks:
       - micro-services
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-discovery:6060/eureka/
+
   accounts:
     image: micro-services/account:latest
     #    deploy:
@@ -27,9 +58,18 @@ services:
     #        memory: 50M
     ports:
       - "5054:5054"
+    depends_on:
+      - service-discovery
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 15s
+        max_attempts: 3
+        window: 120s
     networks:
       - micro-services
-
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://service-discovery:6060/eureka/
 
 networks:
   micro-services:

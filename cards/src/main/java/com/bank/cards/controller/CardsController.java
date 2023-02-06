@@ -1,13 +1,15 @@
 package com.bank.cards.controller;
 
 import com.bank.cards.entity.Cards;
-import com.bank.cards.exceptions.CardNotFoundException;
+import com.bank.cards.models.Customers;
 import com.bank.cards.repository.CardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/cards")
@@ -24,8 +26,8 @@ public class CardsController {
         return new ResponseEntity<>(httpHeaders, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
-    public Cards getCard(@PathVariable("id") Integer id) {
-        return loanRepository.findById(id).orElseThrow(() -> new CardNotFoundException("Card Number not found"));
+    @PostMapping("/details")
+    public List<Cards> getCards(@RequestBody Customers customers) {
+        return loanRepository.findByCustomerId(customers.getCustomerId());
     }
 }

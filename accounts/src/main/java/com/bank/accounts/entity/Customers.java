@@ -2,9 +2,9 @@ package com.bank.accounts.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.*;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
+import lombok.*;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -17,10 +17,10 @@ import java.util.List;
 @ToString
 public class Customers {
 
-    @Column(name = "custumerid")
+    @Column(name = "customerid")
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer custumerId;
+    private Integer customerId;
 
     @Column(name = "firstname")
     private String firstName;

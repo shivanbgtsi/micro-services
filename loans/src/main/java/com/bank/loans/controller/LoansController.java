@@ -1,8 +1,11 @@
 package com.bank.loans.controller;
 
+import com.bank.loans.entity.Customers;
 import com.bank.loans.entity.Loans;
-import com.bank.loans.exceptions.LoanNumberNotFoundException;
 import com.bank.loans.repository.LoanRepository;
+
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -20,12 +23,16 @@ public class LoansController {
     public ResponseEntity<Void> addLoan(@RequestBody Loans loans) {
         Loans save = loanRepository.save(loans);
         HttpHeaders httpHeaders = new HttpHeaders();
-        httpHeaders.add("customerId", save.getLoanNumber().toString());
+        System.out.println("Why here");
+        httpHeaders.add("loanNumber", save.getLoanNumber().toString());
         return new ResponseEntity<>(httpHeaders, HttpStatus.CREATED);
     }
 
-    @GetMapping("/{id}")
-    public Loans getLoan(@PathVariable("id") Integer id) {
-        return loanRepository.findById(id).orElseThrow(() -> new LoanNumberNotFoundException("Loan number not found"));
+    @PostMapping("/details")
+    public List<Loans> getLoan(@RequestBody Customers customers) {
+        List<Loans> byCustomerId = loanRepository.findByCustomerId(customers.getCustomerId());
+
+        System.out.println(byCustomerId);
+        return byCustomerId;
     }
 }
