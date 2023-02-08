@@ -11,6 +11,9 @@ import com.bank.accounts.service.client.LoanService;
 
 import java.util.List;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -39,6 +42,8 @@ public class CustomersController {
     }
 
     @GetMapping("/{id}")
+//    @CircuitBreaker(name = "customerCircuitBreaker",fallbackMethod = "proxyCustomerDetails")
+    @Retry(name = "retryForCustomerDetails", fallbackMethod = "proxyCustomerDetails")
     public CustomerDetails getCustomer(@PathVariable("id") Integer id){
     	
         Customers customers = customersRepository.findById(id).orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
@@ -47,4 +52,23 @@ public class CustomersController {
         CustomerDetails customerDetails = new CustomerDetails(customers, loansDetails,cardsDetails);
         return  customerDetails;
     }
+
+    private CustomerDetails proxyCustomerDetails(Integer id, Throwable t){
+        Customers customers = customersRepository.findById(id).orElseThrow(() -> new CustomerNotFoundException("Customer not found"));
+        List<Loans> loansDetails = loanService.getLoansDetails(customers);
+        List<Cards> cardsDetails = cardsService.getCardsDetails(customers);
+        CustomerDetails customerDetails = new CustomerDetails(customers, loansDetails,cardsDetails);
+        return  customerDetails;
+    }
+
+    @GetMapping("/sayHello")
+    @RateLimiter(name = "sayHello", fallbackMethod = "sayHelloFallback")
+    public String sayHello() {
+        return "Hello, Welcome to microservice";
+    }
+
+    private String sayHelloFallback(Throwable t) {
+        return "Hi, Welcome to microservice";
+    }
+
 }
