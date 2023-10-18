@@ -1,0 +1,83 @@
+eureka:
+  client:
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:6060/eureka/
+  instance:
+    preferIpAddress: true
+info:
+  app:
+    description: Account Microservice application
+    name: Accounts
+    version: 1.0.0
+logging:
+  pattern:
+    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
+management:
+  endpoint:
+    shutdown:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  info:
+    env:
+      enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+    instances:
+      customerCircuitBreaker:
+        failureRateThreshold: 50
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 2
+        waitDurationInOpenState: 30000
+  ratelimiter:
+    configs:
+      default:
+        registerHealthIndicator: true
+    instances:
+      sayHello:
+        limitForPeriod: 1
+        limitRefreshPeriod: 5000
+        timeoutDuration: 5000
+  retry:
+    configs:
+      default:
+        registerHealthIndicator: true
+    instances:
+      retryForCustomerDetails:
+        maxRetryAttempts: 3
+        waitDuration: 2000
+server:
+  port: 5054
+spring:
+  application:
+    name: accounts
+  datasource:
+    password: banksAccount
+    url: jdbc:h2:mem:accounts
+    username: banks
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+  jpa:
+    show-sql: true
