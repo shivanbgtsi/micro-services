@@ -1,12 +1,12 @@
 package com.gatewayserver;
 
+import java.time.LocalDateTime;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
-
-import java.time.LocalDateTime;
 
 @SpringBootApplication
 public class GatewayServerApplication {
@@ -16,24 +16,22 @@ public class GatewayServerApplication {
 	}
 
 	@Bean
-	public RouteLocator routeLocator(RouteLocatorBuilder builder){
-		return builder.routes()
-				.route(path ->
-						path.path("bank/account/**")
-								.filters(f -> f.rewritePath("/bank/accounts/(?<segment>.*)","/${segment}")
-								.addRequestHeader("X-Response-Time", LocalDateTime.now().toString()))
-								.uri("lb://ACCOUNTS"))
-				.route(path ->
-						path.path("bank/loans/**")
-								.filters(f -> f.rewritePath("/bank/loans/(?<segment>.*)","/${segment}")
-										.addRequestHeader("X-Response-Time", LocalDateTime.now().toString()))
-								.uri("lb://LOANS"))
-				.route(path ->
-						path.path("bank/cards/**")
-								.filters(f -> f.rewritePath("/bank/cards/(?<segment>.*)","/${segment}")
-										.addRequestHeader("X-Response-Time", LocalDateTime.now().toString()))
-								.uri("lb://CARDS"))
+	public RouteLocator routeLocator(RouteLocatorBuilder routeLocatorBuilder) {
+		return routeLocatorBuilder.routes()
+				.route(p -> p.path("/demo/accounts/**")
+						.filters(f -> f.rewritePath("/demo/accounts/(?<segment>.*)", "/${segment}")
+								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
+						.uri("lb://ACCOUNTS"))
+				.route(p -> p.path("/demo/loans/**")
+						.filters(f -> f.rewritePath("/demo/loans/(?<segment>.*)", "/${segment}")
+								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
+						.uri("lb://LOANS"))
+				.route(p -> p.path("/demo/cards/**")
+						.filters(f -> f.rewritePath("/demo/cards/(?<segment>.*)", "/${segment}")
+								.addResponseHeader("X-Response-Time", LocalDateTime.now().toString()))
+						.uri("lb://CARDS"))
 				.build();
+
 	}
 
 }

@@ -1,0 +1,56 @@
+eureka:
+  client:
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://localhost:6060/eureka/
+  instance:
+    preferIpAddress: true
+info:
+  app:
+    description: Loans Microservice application
+    name: Loans Microservice
+    version: 1.0.0
+logging:
+  pattern:
+    level: '%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]'
+management:
+  endpoint:
+    shutdown:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  info:
+    env:
+      enabled: true
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: http://localhost:9411/api/v2/spans
+server:
+  port: 5053
+ 
+spring:
+  application:
+    name: Loans
+  datasource:
+    password: bankLoans
+    url: jdbc:h2:mem:loans
+    username: banks
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+  jpa:
+    show-sql: true

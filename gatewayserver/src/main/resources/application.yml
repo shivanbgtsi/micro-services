@@ -1,0 +1,43 @@
+eureka:
+  client:
+    serviceUrl:
+      defaultZone: http://localhost:6060/eureka/
+info:
+  app:
+    description: Bank Gateway Server Application
+    name: gatewayserver
+    version: 1.0.0
+logging:
+  level:
+    com:
+      gatewayserver: DEBUG
+management:
+  endpoint:
+    gateway:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  info:
+    env:
+      enabled: true
+server:
+  port: 6061
+spring:
+  application:
+    name: gatewayserver
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
+  main:
+    allow-bean-definition-overriding: true
+    web-application-type: reactive
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: http://localhost:7080/realms/master/protocol/openid-connect/certs
